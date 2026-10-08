@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Your Cart | DealForge</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+
+        <a href="{{ url_for('home') }}" class="logo">
+            <span class="logo-icon">◆</span>
+            DealForge
+        </a>
+
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('home') }}#products">Products</a>
+            <a href="{{ url_for('home') }}#deals">Deals</a>
+
+            <a href="{{ url_for('cart') }}" class="cart-btn">
+                🛒 Cart
+                <span class="cart-count">{{ cart_count }}</span>
+            </a>
+        </div>
+
+    </nav>
+
+
+    <!-- CART HEADER -->
+    <section class="cart-page">
+
+        <div class="cart-header">
+
+            <span class="section-label">
+                YOUR SHOPPING BAG
+            </span>
+
+            <h1>
+                Your <span>Cart.</span>
+            </h1>
+
+            <p>
+                Review your products before finding your best deal.
+            </p>
+
+        </div>
+
+
+        {% if cart_items %}
+
+        <div class="cart-layout">
+
+            <!-- CART ITEMS -->
+            <div class="cart-items">
+
+                {% for item in cart_items %}
+
+                <div class="cart-item">
+
+                    <img
+                        src="{{ item['image'] }}?auto=format&fit=crop&w=400&q=80"
+                        alt="{{ item['name'] }}"
+                    >
+
+                    <div class="cart-item-info">
+
+                        <span>DEALFORGE PRODUCT</span>
+
+                        <h3>
+                            {{ item['name'] }}
+                        </h3>
+
+                        <strong>
+                            ₹{{ "{:,.0f}".format(item['price']) }}
+                        </strong>
+
+                    </div>
+
+                    <a
+                        href="{{ url_for('remove_from_cart', index=loop.index0) }}"
+                        class="remove-btn"
+                    >
+                        Remove
+                    </a>
+
+                </div>
+
+                {% endfor %}
+
+                <a
+                    href="{{ url_for('clear_cart') }}"
+                    class="clear-cart"
+                >
+                    Clear Cart
+                </a>
+
+            </div>
+
+
+            <!-- ORDER SUMMARY -->
+            <div class="cart-summary">
+
+                <span class="section-label">
+                    ORDER SUMMARY
+                </span>
+
+                <h2>
+                    Cart <span>total.</span>
+                </h2>
+
+                <div class="summary-row">
+                    <span>Items</span>
+                    <strong>{{ cart_count }}</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <strong>
+                        ₹{{ "{:,.0f}".format(subtotal) }}
+                    </strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <strong class="free">
+                        FREE
+                    </strong>
+                </div>
+
+                <div class="summary-divider"></div>
+
+                <div class="summary-total">
+                    <span>Total</span>
+
+                    <strong>
+                        ₹{{ "{:,.0f}".format(subtotal) }}
+                    </strong>
+                </div>
+
+
+                <a
+                    href="{{ url_for('checkout') }}"
+                    class="checkout-btn"
+                >
+                    Find My Best Deal →
+                </a>
+
+                <p class="summary-note">
+                    🧠 Our Python discount engine will compare
+                    multiple strategies at checkout.
+                </p>
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <!-- EMPTY CART -->
+        <div class="empty-cart">
+
+            <div class="empty-cart-icon">
+                🛒
+            </div>
+
+            <h2>
+                Your cart is empty.
+            </h2>
+
+            <p>
+                Looks like you haven't added anything yet.
+            </p>
+
+            <a
+                href="{{ url_for('home') }}#products"
+                class="primary-btn"
+            >
+                Start Shopping →
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+        <div class="footer-logo">
+            ◆ DealForge
+        </div>
+
+        <p>
+            Forge the best deal. Shop smarter.
+        </p>
+
+        <span>
+            © 2026 DealForge • Python Shopping Cart Project
+        </span>
+
+    </footer>
+
+</body>
+</html>

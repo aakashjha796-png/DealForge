@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Checkout | DealForge</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+
+        <a href="{{ url_for('home') }}" class="logo">
+            <span class="logo-icon">◆</span>
+            DealForge
+        </a>
+
+        <div class="nav-links">
+
+            <a href="{{ url_for('home') }}">
+                Home
+            </a>
+
+            <a href="{{ url_for('home') }}#products">
+                Products
+            </a>
+
+            <a href="{{ url_for('cart') }}" class="cart-btn">
+                🛒 Cart
+                <span class="cart-count">
+                    {{ cart_count }}
+                </span>
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- CHECKOUT -->
+    <main class="checkout-page">
+
+        <div class="checkout-header">
+
+            <span class="section-label">
+                SMART CHECKOUT
+            </span>
+
+            <h1>
+                Find your <span>best deal.</span>
+            </h1>
+
+            <p>
+                Our Python discount engine compares every eligible
+                strategy and finds the option that saves you the most.
+            </p>
+
+        </div>
+
+
+        <div class="checkout-layout">
+
+
+            <!-- LEFT SIDE -->
+            <div class="checkout-left">
+
+
+                <!-- CART ITEMS -->
+                <div class="checkout-card">
+
+                    <div class="card-title">
+                        <div>
+                            <span class="section-label">
+                                YOUR ITEMS
+                            </span>
+
+                            <h2>
+                                Order <span>summary.</span>
+                            </h2>
+                        </div>
+
+                        <span class="item-count">
+                            {{ cart_count }} item{% if cart_count != 1 %}s{% endif %}
+                        </span>
+                    </div>
+
+
+                    {% for item in cart_items %}
+
+                    <div class="checkout-item">
+
+                        <img
+                            src="{{ item['image'] }}?auto=format&fit=crop&w=300&q=80"
+                            alt="{{ item['name'] }}"
+                        >
+
+                        <div>
+                            <h3>
+                                {{ item['name'] }}
+                            </h3>
+
+                            <span>
+                                DealForge Product
+                            </span>
+                        </div>
+
+                        <strong>
+                            ₹{{ "{:,.0f}".format(item['price']) }}
+                        </strong>
+
+                    </div>
+
+                    {% endfor %}
+
+
+                    <div class="checkout-subtotal">
+
+                        <span>
+                            Cart Subtotal
+                        </span>
+
+                        <strong>
+                            ₹{{ "{:,.0f}".format(subtotal) }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DISCOUNT FORM -->
+                <div class="checkout-card">
+
+                    <span class="section-label">
+                        DISCOUNT ENGINE
+                    </span>
+
+                    <h2>
+                        Unlock your <span>savings.</span>
+                    </h2>
+
+                    <p class="card-description">
+                        Tell us if you're a student and enter a
+                        coupon code. DealForge will calculate the
+                        best available strategy.
+                    </p>
+
+
+                    <form
+                        action="{{ url_for('checkout') }}"
+                        method="POST"
+                    >
+
+                        <!-- STUDENT OPTION -->
+                        <label class="student-option">
+
+                            <input
+                                type="checkbox"
+                                name="student"
+                                value="yes"
+                                {% if is_student %}checked{% endif %}
+                            >
+
+                            <div>
+
+                                <strong>
+                                    🎓 I'm a student
+                                </strong>
+
+                                <small>
+                                    Unlock an additional 5% student discount.
+                                </small>
+
+                            </div>
+
+                        </label>
+
+
+                        <!-- COUPON -->
+                        <div class="coupon-box">
+
+                            <label for="coupon">
+                                Coupon Code
+                            </label>
+
+                            <div class="coupon-input">
+
+                                <input
+                                    type="text"
+                                    id="coupon"
+                                    name="coupon"
+                                    placeholder="Try SAVE20"
+                                    value="{{ coupon }}"
+                                >
+
+                                <button type="submit">
+                                    Apply
+                                </button>
+
+                            </div>
+
+                            <small>
+                                Available: SAVE20 or DEAL10
+                            </small>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+            <!-- RIGHT SIDE -->
+            <aside class="checkout-right">
+
+                <div class="price-card">
+
+                    <span class="section-label">
+                        SMART PRICE
+                    </span>
+
+                    <h2>
+                        Your <span>deal.</span>
+                    </h2>
+
+
+                    <div class="price-row">
+
+                        <span>
+                            Subtotal
+                        </span>
+
+                        <strong>
+                            ₹{{ "{:,.0f}".format(subtotal) }}
+                        </strong>
+
+                    </div>
+
+
+                    {% if discount_result %}
+
+                        <div class="strategy-result">
+
+                            <div class="result-title">
+                                <span>
+                                    STRATEGIES ANALYZED
+                                </span>
+
+                                <strong>
+                                    {{ discount_result["strategies"]|length }}
+                                </strong>
+                            </div>
+
+
+                            {% for strategy in discount_result["strategies"] %}
+
+                            <div class="strategy-result-row
+                                {% if strategy["name"] == discount_result["best_discount"]["name"] %}
+                                selected-strategy
+                                {% endif %}">
+
+                                <div>
+
+                                    <span>
+                                        {% if strategy["name"] == discount_result["best_discount"]["name"] %}
+                                            🏆
+                                        {% else %}
+                                            ✓
+                                        {% endif %}
+
+                                        {{ strategy["name"] }}
+                                    </span>
+
+                                    <small>
+                                        {{ strategy["percentage"] }}% OFF
+                                    </small>
+
+                                </div>
+
+                                <strong>
+                                    − ₹{{ "{:,.0f}".format(strategy["amount"]) }}
+                                </strong>
+
+                            </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <div class="best-deal">
+
+                            <div class="best-deal-icon">
+                                🏆
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    BEST STRATEGY
+                                </span>
+
+                                <strong>
+                                    {{ discount_result["best_discount"]["name"] }}
+                                </strong>
+
+                            </div>
+
+                            <div class="best-saving">
+                                −₹{{ "{:,.0f}".format(discount_result["total_savings"]) }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="final-price">
+
+                            <span>
+                                FINAL PRICE
+                            </span>
+
+                            <strong>
+                                ₹{{ "{:,.0f}".format(discount_result["final_price"]) }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="you-save">
+
+                            🎉 You saved
+                            <strong>
+                                ₹{{ "{:,.0f}".format(discount_result["total_savings"]) }}
+                            </strong>
+
+                        </div>
+
+
+                    {% else %}
+
+                        <div class="calculate-placeholder">
+
+                            <div>
+                                🧠
+                            </div>
+
+                            <h3>
+                                Ready to calculate.
+                            </h3>
+
+                            <p>
+                                Select your student status or enter
+                                a coupon, then press
+                                <strong>Apply</strong>.
+                            </p>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <a
+                        href="{{ url_for('cart') }}"
+                        class="back-cart"
+                    >
+                        ← Back to Cart
+                    </a>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+        <div class="footer-logo">
+            ◆ DealForge
+        </div>
+
+        <p>
+            Forge the best deal. Shop smarter.
+        </p>
+
+        <span>
+            © 2026 DealForge • Python Shopping Cart Project
+        </span>
+
+    </footer>
+
+</body>
+</html>

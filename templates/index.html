@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DealForge | Forge the Best Deal</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+
+        <div class="logo">
+            <span class="logo-icon">◆</span>
+            DealForge
+        </div>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="#products">Products</a>
+            <a href="#deals">Deals</a>
+
+            <a href="{{ url_for('cart') }}" class="cart-btn">
+                🛒 Cart
+                <span class="cart-count">{{ cart_count }}</span>
+            </a>
+        </div>
+
+    </nav>
+
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <div class="hero-badge">
+                ⚡ SMART SHOPPING • SMART SAVINGS
+            </div>
+
+            <h1>
+                Forge the
+                <span>Best Deal.</span>
+            </h1>
+
+            <p>
+                Shop your favourite products and let our intelligent
+                discount engine find the best possible price for you.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="#products" class="primary-btn">
+                    Shop Now →
+                </a>
+
+                <a href="#deals" class="secondary-btn">
+                    View Deals
+                </a>
+            </div>
+
+            <div class="hero-stats">
+
+                <div>
+                    <strong>6+</strong>
+                    <small>Products</small>
+                </div>
+
+                <div>
+                    <strong>4</strong>
+                    <small>Discount Strategies</small>
+                </div>
+
+                <div>
+                    <strong>100%</strong>
+                    <small>Smart Pricing</small>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- HERO VISUAL -->
+        <div class="hero-visual">
+
+            <div class="glow-circle"></div>
+
+            <div class="deal-card">
+
+                <div class="deal-card-top">
+                    <span>🔥 BEST DEAL</span>
+                    <span>20% OFF</span>
+                </div>
+
+                <div class="deal-product">
+                    <div class="product-icon">🎧</div>
+
+                    <div>
+                        <h3>Wireless Headphones</h3>
+                        <p>Premium Audio</p>
+                    </div>
+                </div>
+
+                <div class="price-section">
+                    <span class="old-price">₹2,499</span>
+                    <strong>₹1,999</strong>
+                </div>
+
+                <div class="saving">
+                    You save ₹500
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- DEAL STRATEGIES -->
+    <section class="deals-section" id="deals">
+
+        <div class="section-heading">
+
+            <span class="section-label">
+                SMART DISCOUNTS
+            </span>
+
+            <h2>
+                More ways to
+                <span>save.</span>
+            </h2>
+
+            <p>
+                DealForge checks multiple discount strategies
+                and helps you get the best available deal.
+            </p>
+
+        </div>
+
+
+        <div class="strategy-grid">
+
+            <div class="strategy-card">
+                <div class="strategy-icon">📦</div>
+                <h3>Bulk Discount</h3>
+                <p>Get 10% off when your cart value reaches ₹5,000.</p>
+                <strong>10% OFF</strong>
+            </div>
+
+            <div class="strategy-card">
+                <div class="strategy-icon">🎉</div>
+                <h3>Festival Offer</h3>
+                <p>Enjoy a special 15% discount on eligible orders.</p>
+                <strong>15% OFF</strong>
+            </div>
+
+            <div class="strategy-card">
+                <div class="strategy-icon">🎓</div>
+                <h3>Student Discount</h3>
+                <p>Students can unlock an additional smart saving.</p>
+                <strong>5% OFF</strong>
+            </div>
+
+            <div class="strategy-card">
+                <div class="strategy-icon">🎟️</div>
+                <h3>Coupon Deals</h3>
+                <p>Use special coupons like SAVE20 for extra savings.</p>
+                <strong>UP TO 20%</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- PRODUCTS -->
+    <section class="products-section" id="products">
+
+        <div class="section-heading product-heading">
+
+            <div>
+                <span class="section-label">
+                    EXPLORE PRODUCTS
+                </span>
+
+                <h2>
+                    Trending
+                    <span>picks.</span>
+                </h2>
+            </div>
+
+            <p>
+                Quality products. Better prices.
+                Smarter discounts.
+            </p>
+
+        </div>
+
+
+        <div class="product-grid">
+
+            {% for product in products %}
+
+            <div class="product-card">
+
+                <div class="product-image">
+
+                    <img
+                        src="{{ product['image'] }}?auto=format&fit=crop&w=800&q=80"
+                        alt="{{ product['name'] }}"
+                    >
+
+                    <span class="product-tag">
+                        DEAL
+                    </span>
+
+                </div>
+
+
+                <div class="product-info">
+
+                    <span class="category">
+                        {{ product['category'] }}
+                    </span>
+
+                    <h3>
+                        {{ product['name'] }}
+                    </h3>
+
+                    <p>
+                        {{ product['description'] }}
+                    </p>
+
+
+                    <div class="product-bottom">
+
+                        <div class="product-price">
+                            ₹{{ "{:,.0f}".format(product['price']) }}
+                        </div>
+
+                        <a
+                            href="{{ url_for('add_to_cart', product_id=product['id']) }}"
+                            class="add-btn"
+                        >
+                            + Add
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <!-- SMART DISCOUNT BANNER -->
+    <section class="smart-banner">
+
+        <div>
+
+            <span class="section-label">
+                POWERED BY PYTHON
+            </span>
+
+            <h2>
+                Don't settle for
+                <span>less savings.</span>
+            </h2>
+
+            <p>
+                Our discount engine evaluates multiple strategies
+                and automatically identifies the deal that saves you
+                the most money.
+            </p>
+
+        </div>
+
+        <div class="algorithm-box">
+
+            <div class="algorithm-line">
+                <span>Cart Value</span>
+                <strong>₹5,797</strong>
+            </div>
+
+            <div class="algorithm-line">
+                <span>Festival Offer</span>
+                <strong>− ₹870</strong>
+            </div>
+
+            <div class="algorithm-line">
+                <span>Student Discount</span>
+                <strong>− ₹290</strong>
+            </div>
+
+            <div class="algorithm-line best">
+                <span>🏆 Best Strategy</span>
+                <strong>SAVE20</strong>
+            </div>
+
+            <div class="algorithm-final">
+                <span>Final Price</span>
+                <strong>₹4,638</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+        <div class="footer-logo">
+            ◆ DealForge
+        </div>
+
+        <p>
+            Forge the best deal. Shop smarter.
+        </p>
+
+        <span>
+            © 2026 DealForge • Python Shopping Cart Project
+        </span>
+
+    </footer>
+
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+</body>
+</html>
